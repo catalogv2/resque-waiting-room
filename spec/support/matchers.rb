@@ -4,7 +4,7 @@ RSpec::Matchers.define :be_only_performed do |expected_options|
     expected_period = expected_options[:period]
     expected_times = expected_options[:times]
     actual_job_class = actual_job_class.class unless actual_job_class.kind_of?(Class)
-    unless actual_job_class.singleton_class.ancestors.include?(Resque::Plugins::WaitingRoom)
+    unless actual_job_class.is_instance_of_waiting_room_plugin?
       raise ArgumentError, 'waiting room matcher used on non resque-job'
     end
     [actual_job_class.instance_variable_get(:@period) == expected_period,

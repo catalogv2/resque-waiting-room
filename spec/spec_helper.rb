@@ -7,8 +7,8 @@ RSpec.configure do |config|
 end
 
 puts 'Using a mock Redis'
-r = MockRedis.new host: "localhost", port: 9736, db: 0
-$mock_redis = Redis::Namespace.new :resque, redis: r
+r = MockRedis.new :host => "localhost", :port =>9736, :db => 0
+$mock_redis = Redis::Namespace.new :resque, :redis => r
 Resque.redis = $mock_redis
 
 # Require ruby files in support dir.

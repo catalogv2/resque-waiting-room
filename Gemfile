@@ -4,10 +4,14 @@ source "https://rubygems.org"
 gemspec
 
 group :development do
+  gem 'pry'
+  
+  gem 'json'
   gem 'resque', '~>1.24.1'
 end
 
 group :test do
+  gem 'pry'
   gem 'rspec'
-  gem 'mock_redis'
+  gem 'mock_redis', '0.8.1'
 end
