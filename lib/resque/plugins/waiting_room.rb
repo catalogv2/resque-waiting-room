@@ -31,7 +31,7 @@ module Resque
         # a negative number then redis either doesn't know about the key
         # or it doesn't have a ttl, either way we want to create a new key
         # with a new ttl.
-        create_new_key = Resque.redis.ttl(key).to_i <= 0
+        create_new_key = Resque.redis.ttl(key).to_i < 0
 
         # Redis SET: with the ex and nx option  sets the keys if it doesn't exist,
         # returns true if key was created redis => 2.6 required
