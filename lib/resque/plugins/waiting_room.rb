@@ -36,14 +36,22 @@ module Resque
         # Redis SET: with the ex and nx option  sets the keys if it doesn't exist,
         # returns true if key was created redis => 2.6 required
         # http://redis.io/commands/SET
+      
         res = false
-        Resque.redis.multi do
-          if Resque.redis.get(key).nil? || create_new_key 
-            Resque.redis.setex(key, @period,@max_performs - 1)
-            res = false
-          else
-            res = true
+        begin
+          Resque.redis.watch(key) do 
+            value = Resque.redis.get(key) 
+            Resque.redis.multi do
+              if value.nil? || create_new_key 
+                Resque.redis.setex(key, @period,@max_performs - 1)
+                res = false
+              else
+                res = true
+              end
+            end
           end
+        rescue 
+          res = false # if the value is modified by another job, we put this job in the waiting_room.
         end
         return res
       end

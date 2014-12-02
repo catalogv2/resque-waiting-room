@@ -1,17 +1,16 @@
 require File.join(File.dirname(__FILE__) + '/../../spec_helper')
 
-#monkey patch time
-
-# class Time
-#   def to_r
-#     self.to_f
-#   end
-# end
-
+#monkey patch Redis.watch command.
+class MockRedis
+  def watch(key,&block)
+    block.call
+  end
+end
 
 describe Resque::Plugins::WaitingRoom do
   before(:each) do
     Resque.redis.flushall
+
   end
 
   it 'should validate the Resque linter' do
