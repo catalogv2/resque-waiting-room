@@ -86,9 +86,10 @@ describe Resque::Plugins::WaitingRoom do
       DummyJob.remaining_performs_key?(DummyJob.waiting_room_redis_key)
     end
 
+    #this test does not make sense for a setex command, only for set nx
     # it 'should not re-expire the redis key if it is already created' do
     #   DummyJob.remaining_performs_key?(DummyJob.waiting_room_redis_key)
-    #   expect(Resque.redis).to(receive(:setex)).with(@key, @max).and_return(false)
+    #   expect(Resque.redis).to(receive(:setex)).with(@key,@period, @max).and_return(true)
     #   DummyJob.remaining_performs_key?(DummyJob.waiting_room_redis_key)
     # end
 
@@ -96,9 +97,8 @@ describe Resque::Plugins::WaitingRoom do
       expect(Resque.redis).to(receive(:setex)).with(@key, @period,@max).and_return(true)
       expect(DummyJob.remaining_performs_key?(DummyJob.waiting_room_redis_key)).to eq(false)
     end
-
     it 'should return true if the key was already created' do
-      #expect(Resque.redis).to(receive(:set)).with(@key, @max, :ex => @period, :nx => false).and_return(false)
+      Resque.redis.setex(@key,@period,@max)
       expect(DummyJob.remaining_performs_key?(DummyJob.waiting_room_redis_key)).to eq(true)
     end
   end

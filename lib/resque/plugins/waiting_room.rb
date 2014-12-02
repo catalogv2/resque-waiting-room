@@ -39,9 +39,10 @@ module Resque
         res = false
         Resque.redis.multi do
           if Resque.redis.get(key).nil? || create_new_key 
-            if Resque.redis.setex(key, @period,@max_performs - 1)
-              res = true
-            end
+            Resque.redis.setex(key, @period,@max_performs - 1)
+            res = false
+          else
+            res = true
           end
         end
         return res
